@@ -2,14 +2,32 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import React from "react";
 import Ionicon from "react-native-vector-icons/Ionicons";
 
-const CustomInput = ({ placeholder, icon }) => {
+const CustomInput = ({
+  placeholder,
+  icon,
+  color,
+  onChangeText,
+  value,
+  isSecure,
+}) => {
   return (
     // shadow container used to cascade shadow to child as long as no background color set
     // because can't use overflow:"hidden" on child without clipping shadow
     <View style={styles.shadowContainer}>
       <View style={styles.inputContainer}>
-        <Ionicon style={styles.icon} name={icon} size={17} />
-        <TextInput style={styles.input} placeholder={placeholder} />
+        <Ionicon
+          style={styles.icon}
+          name={icon}
+          size={17}
+          color={color ? color : "black"}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder={placeholder}
+          onChangeText={onChangeText}
+          secureTextEntry={isSecure}
+          value={value}
+        />
       </View>
     </View>
   );
