@@ -27,7 +27,7 @@ const SignupScreen = () => {
   const passwordInputHandler = (text) => setPassword(text);
   const confirmInputHandler = (text) => setConfirmPassword(text);
 
-  // Close keyboard if open when sign up screen is navigated to
+  // Close keyboard if it's open when sign up screen is navigated to
   // Prevents bugginess with swipe down animation
   useEffect(() => {
     Keyboard.dismiss();
