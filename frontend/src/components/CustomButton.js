@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import colors from "../util/constants/colors";
 
 const CustomButton = ({ children, style }) => {
   return (
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     width: "80%",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#676fc7",
+    backgroundColor: colors.violet,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
