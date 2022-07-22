@@ -5,16 +5,39 @@ const db = require("../../config/database");
 const User = require("../models/user");
 
 exports.signup = async (req, res, next) => {
-  const user = new User("potenza1702@gmail.com", "password123");
-  await user.signUp();
-  const [id] = await user.getID();
-  console.log(id);
-  res.send("<h1>Success</h1>");
+  const email = req.body.email;
+  const password = req.body.password;
+  const user = new User(email, password);
+  try {
+    await user.signUp();
+    const [idData] = await user.getID();
+    const userID = idData[0].id;
+    res.json({
+      email,
+      password,
+      userID,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.login = async (req, res, next) => {
-  const email = "potenza1702@gmail.com";
-  const [password] = await User.getPassword(email);
-  console.log(password);
-  res.send("<h1>Success</h1>");
+  const email = req.body.email;
+  const password = req.body.password;
+  try {
+    const [fetchedPasswordData] = await User.getPassword(email);
+    if (fetchedPasswordData) {
+      const fetchedPassword = fetchedPasswordData[0].password;
+      if (fetchedPassword === password) {
+        res.json({ message: "match" });
+      } else {
+        const error = new Error("Passwords do not match");
+        error.statusCode = 401;
+        throw error;
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
 };
