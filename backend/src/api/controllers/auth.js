@@ -1,8 +1,5 @@
 const bcrypt = require("bcryptjs");
 
-// database connection
-const db = require("../../config/database");
-
 // models
 const User = require("../models/user");
 
