@@ -61,7 +61,7 @@ exports.handleRefreshToken = async (req, res, next) => {
           process.env.REFRESH_TOKEN_SECRET
         );
         const newHashedRefreshToken = await bcrypt.hash(newRefreshToken, 12);
-        new RefreshToken(newHashedToken, decoded.userId).addRefresh(); //add refresh token to database
+        new RefreshToken(newHashedRefreshToken, decoded.userId).addRefresh(); //add refresh token to database
         res.status(200).json({ accessToken, newRefreshToken }); //send new tokens
       }
     );
