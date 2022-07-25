@@ -2,7 +2,7 @@ const db = require("../../config/database");
 
 module.exports = class User {
   /**
-   * Instantiate a user object
+   * Create user model
    * @param {string} email
    * @param {string} password
    */
@@ -13,6 +13,16 @@ module.exports = class User {
 
   static getPassword(email) {
     return db.execute("SELECT password FROM user WHERE email=?", [email]);
+  }
+
+  /**
+   * Return the user ID for a given email
+   */
+  static getID(email) {
+    return db.execute(
+      "SELECT BIN_TO_UUID(userID) AS id FROM user WHERE email=?",
+      [email]
+    );
   }
 
   /**
