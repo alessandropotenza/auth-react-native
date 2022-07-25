@@ -11,6 +11,9 @@ module.exports = class RefreshToken {
     this.user_id = user_id;
   }
 
+  /**
+   * Return user id associated with a refresh token if it exists
+   */
   static verifyRefresh(token) {
     return db.execute(
       "SELECT BIN_TO_UUID(user_id) as id FROM refresh_token WHERE token=?",

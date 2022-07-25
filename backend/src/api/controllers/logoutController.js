@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 
-const RefreshToken = require("../models/refreshToken");
+const RefreshToken = require("../models/RefreshToken");
 
 exports.logout = async (req, res, next) => {
   // get refresh token from POST body

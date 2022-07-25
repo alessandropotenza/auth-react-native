@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 // models
-const RefreshToken = require("../models/refreshToken");
+const RefreshToken = require("../models/RefreshToken");
 
 exports.handleRefreshToken = async (req, res, next) => {
   // get refresh token from POST body
