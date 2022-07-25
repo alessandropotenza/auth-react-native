@@ -37,7 +37,7 @@ module.exports = class RefreshToken {
 
   addRefresh() {
     return db.execute(
-      "INSERT INTO refresh_token (token, user_id) VALUES (?, ?)",
+      "INSERT INTO refresh_token (token, user_id) VALUES (?, UUID_TO_BIN(?))",
       [this.token, this.user_id]
     );
   }

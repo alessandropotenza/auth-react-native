@@ -11,8 +11,11 @@ module.exports = class User {
     this.password = password;
   }
 
-  static getPassword(email) {
-    return db.execute("SELECT password FROM user WHERE email=?", [email]);
+  static getUser(email) {
+    return db.execute(
+      "SELECT BIN_TO_UUID(userID) AS id, email, password FROM user WHERE email=?",
+      [email]
+    );
   }
 
   /**
@@ -33,15 +36,5 @@ module.exports = class User {
       this.email,
       this.password,
     ]);
-  }
-
-  /**
-   * Return this user's ID
-   */
-  getID() {
-    return db.execute(
-      "SELECT BIN_TO_UUID(userID) AS id FROM user WHERE email=?",
-      [this.email]
-    );
   }
 };
