@@ -19,12 +19,12 @@ module.exports = class User {
   }
 
   /**
-   * Return the user ID for a given email
+   * Return this user's ID
    */
-  static getID(email) {
+  getID() {
     return db.execute(
       "SELECT BIN_TO_UUID(userID) AS id FROM user WHERE email=?",
-      [email]
+      [this.email]
     );
   }
 
