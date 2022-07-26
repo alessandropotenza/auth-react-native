@@ -9,9 +9,11 @@ app.use(express.json()); //parse JSON data from incoming requests
 
 // import routes
 const authRoutes = require("./api/routes/auth");
+const refreshRoutes = require("./api/routes/refresh");
 
 // use routes
 app.use(authRoutes);
+app.use(refreshRoutes);
 
 // error handling middleware
 app.use(error);
