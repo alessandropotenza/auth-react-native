@@ -3,21 +3,21 @@ const db = require("../../config/database");
 module.exports = class RefreshToken {
   /**
    * Create refreshToken model
-   * @param {string} token
+   * @param {string} issued_at
    * @param {string} user_id
    */
-  constructor(token, user_id) {
-    this.token = token;
+  constructor(issued_at, user_id) {
+    this.issued_at = issued_at;
     this.user_id = user_id;
   }
 
   /**
-   * Return user id associated with a refresh token if it exists
+   * Return the claims associated with the refresh token if they exist in database
    */
-  static verifyRefresh(token) {
+  static findClaims(issued_at, user_id) {
     return db.execute(
-      "SELECT BIN_TO_UUID(user_id) as id FROM refresh_token WHERE token=?",
-      [token]
+      "SELECT issued_at, BIN_TO_UUID(user_id) AS user_id FROM refresh_token WHERE ISSUED_AT=? AND user_id=UUID_TO_BIN(?)",
+      [issued_at, user_id]
     );
   }
 
@@ -31,14 +31,20 @@ module.exports = class RefreshToken {
   /**
    * Delete a specific refresh token
    */
-  static revoke(token) {
-    return db.execute("DELETE FROM refresh_token WHERE token=?", [token]);
+  static revoke(issued_at, user_id) {
+    return db.execute(
+      "DELETE FROM refresh_token WHERE issued_at=? AND user_id=UUID_TO_BIN(?)",
+      [issued_at, user_id]
+    );
   }
 
-  addRefresh() {
+  /**
+   * Add claims needed for this refresh token to database
+   */
+  addClaims() {
     return db.execute(
-      "INSERT INTO refresh_token (token, user_id) VALUES (?, UUID_TO_BIN(?))",
-      [this.token, this.user_id]
+      "INSERT INTO refresh_token (issued_at, user_id) VALUES (?, UUID_TO_BIN(?))",
+      [this.issued_at, this.user_id]
     );
   }
 };
