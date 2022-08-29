@@ -1,9 +1,8 @@
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const generateTokens = require("../utils/helpers").generateTokens;
 
 // models
 const User = require("../models/User");
-const RefreshToken = require("../models/RefreshToken");
 
 exports.signup = async (req, res, next) => {
   const { email, password } = req.body;
@@ -21,7 +20,7 @@ exports.signup = async (req, res, next) => {
     const userID = idData[0].id;
 
     // issue auth tokens
-    const { accessToken, refreshToken } = generateTokens(userID);
+    const { accessToken, refreshToken } = await generateTokens(userID);
 
     res.status(201).json({
       message: "user created",
@@ -52,27 +51,10 @@ exports.login = async (req, res, next) => {
       throw err;
     }
 
-    const { accessToken, refreshToken } = generateTokens(user.id);
-
-    // get iat field from refreshToken payload
-    const base64Payload = refreshToken.split(".")[1];
-    const payload = Buffer.from(base64Payload, "base64").toString("ascii");
-    const issuedAt = JSON.parse(payload).iat;
-
-    // add refresh token claims to database
-    await new RefreshToken(issuedAt, user.id).addClaims();
+    // issue auth tokens
+    const { accessToken, refreshToken } = await generateTokens(user.id);
     res.status(200).json({ accessToken, refreshToken });
   } catch (err) {
     next(err);
   }
-};
-
-const generateTokens = (userID) => {
-  // issue access token
-  const accessToken = jwt.sign({ userID }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "5m",
-  });
-  // issue refresh token
-  const refreshToken = jwt.sign({ userID }, process.env.REFRESH_TOKEN_SECRET);
-  return { accessToken, refreshToken };
 };
