@@ -1,3 +1,6 @@
 exports.getMessage = (req, res) => {
-  res.json({ message: "This is the secret message!" });
+  res.json({
+    greet: `Hello, ${req.userID}.`,
+    message: "This is the secret message!",
+  });
 };

@@ -12,9 +12,15 @@ const authRoutes = require("./api/routes/auth");
 const refreshRoutes = require("./api/routes/refresh");
 const homeRoutes = require("./api/routes/home");
 
+// import middleware
+const isAuth = require("./api/middlewares/isAuth");
+
 // unprotected routes
 app.use(authRoutes);
 app.use(refreshRoutes);
+
+// funnel requests to protected routes through the isAuth middleware to verify their access token
+app.use(isAuth);
 
 // protected routes
 app.use(homeRoutes);
