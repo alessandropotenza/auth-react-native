@@ -13,7 +13,7 @@ module.exports = class User {
 
   static getUser(email) {
     return db.execute(
-      "SELECT BIN_TO_UUID(userID) AS id, email, password FROM user WHERE email=?",
+      "SELECT BIN_TO_UUID(user_id) AS id, email, password FROM user WHERE email=?",
       [email]
     );
   }
@@ -23,7 +23,7 @@ module.exports = class User {
    */
   getID() {
     return db.execute(
-      "SELECT BIN_TO_UUID(userID) AS id FROM user WHERE email=?",
+      "SELECT BIN_TO_UUID(user_id) AS id FROM user WHERE email=?",
       [this.email]
     );
   }
