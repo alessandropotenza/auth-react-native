@@ -10,10 +10,14 @@ app.use(express.json()); //parse JSON data from incoming requests
 // import routes
 const authRoutes = require("./api/routes/auth");
 const refreshRoutes = require("./api/routes/refresh");
+const homeRoutes = require("./api/routes/home");
 
-// use routes
+// unprotected routes
 app.use(authRoutes);
 app.use(refreshRoutes);
+
+// protected routes
+app.use(homeRoutes);
 
 // error handling middleware
 app.use(error);
