@@ -19,9 +19,15 @@ exports.signup = async (req, res, next) => {
     await user.signUp();
     const [idData] = await user.getID();
     const userID = idData[0].id;
+
+    // issue auth tokens
+    const { accessToken, refreshToken } = generateTokens(userID);
+
     res.status(201).json({
       message: "user created",
       userID,
+      accessToken,
+      refreshToken,
     });
   } catch (err) {
     next(err);
@@ -46,27 +52,27 @@ exports.login = async (req, res, next) => {
       throw err;
     }
 
-    // issue access token
-    const accessToken = jwt.sign(
-      { userId: user.id },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "5m" }
-    );
-    // issue refresh token
-    const refreshToken = jwt.sign(
-      { userId: user.id },
-      process.env.REFRESH_TOKEN_SECRET
-    );
+    const { accessToken, refreshToken } = generateTokens(user.id);
 
-    //get iat field from refreshToken payload
+    // get iat field from refreshToken payload
     const base64Payload = refreshToken.split(".")[1];
     const payload = Buffer.from(base64Payload, "base64").toString("ascii");
     const issuedAt = JSON.parse(payload).iat;
 
-    //add refresh token to database
+    // add refresh token claims to database
     await new RefreshToken(issuedAt, user.id).addClaims();
     res.status(200).json({ accessToken, refreshToken });
   } catch (err) {
     next(err);
   }
+};
+
+const generateTokens = (userID) => {
+  // issue access token
+  const accessToken = jwt.sign({ userID }, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "5m",
+  });
+  // issue refresh token
+  const refreshToken = jwt.sign({ userID }, process.env.REFRESH_TOKEN_SECRET);
+  return { accessToken, refreshToken };
 };
