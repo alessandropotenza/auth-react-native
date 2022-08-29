@@ -1,10 +1,18 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import colors from "../util/constants/colors";
 
-const CustomButton = ({ children, style }) => {
+const CustomButton = ({ children, style, disabled }) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} style={[styles.container, style]}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      style={[
+        styles.container,
+        style,
+        disabled && { backgroundColor: colors.washedViolet },
+      ]}
+      disabled={disabled}
+    >
       <Text style={styles.text}>{children}</Text>
     </TouchableOpacity>
   );

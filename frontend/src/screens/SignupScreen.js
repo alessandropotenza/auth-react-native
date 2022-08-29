@@ -22,6 +22,7 @@ const SignupScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(false);
+  const [formFilled, setFormFilled] = useState(false);
 
   const emailInputHandler = (text) => setEmail(text);
   const passwordInputHandler = (text) => setPassword(text);
@@ -32,6 +33,14 @@ const SignupScreen = () => {
   useEffect(() => {
     Keyboard.dismiss();
   }, []);
+
+  useEffect(() => {
+    if (email.length > 0 && passwordsMatch) {
+      setFormFilled(true);
+    } else {
+      setFormFilled(false);
+    }
+  }, [email, passwordsMatch]);
 
   useEffect(() => {
     if (password.length > 5 && password === confirmPassword) {
@@ -77,7 +86,9 @@ const SignupScreen = () => {
             value={confirmPassword}
             isSecure={true}
           />
-          <CustomButton style={styles.button}>Sign up</CustomButton>
+          <CustomButton style={styles.button} disabled={!formFilled}>
+            Sign up
+          </CustomButton>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </LinearGradient>
@@ -93,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    fontSize: 30,
+    fontSize: 35,
     fontWeight: "bold",
     marginBottom: 30,
     color: "white",
