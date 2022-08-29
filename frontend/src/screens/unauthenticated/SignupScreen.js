@@ -1,29 +1,53 @@
 import {
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   Text,
   View,
   TouchableWithoutFeedback,
   Keyboard,
-  TouchableOpacity,
+  KeyboardAvoidingView,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Component imports
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
 
 // Color constants import
-import colors from "../util/constants/colors";
+import colors from "../../util/constants/colors";
 
-const LoginScreen = ({ navigation }) => {
+const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState(false);
+  const [formFilled, setFormFilled] = useState(false);
 
   const emailInputHandler = (text) => setEmail(text);
   const passwordInputHandler = (text) => setPassword(text);
+  const confirmInputHandler = (text) => setConfirmPassword(text);
+
+  // Close keyboard if it's open when sign up screen is navigated to
+  // Prevents bugginess with swipe down animation
+  useEffect(() => {
+    Keyboard.dismiss();
+  }, []);
+
+  useEffect(() => {
+    if (email.length > 0 && passwordsMatch) {
+      setFormFilled(true);
+    } else {
+      setFormFilled(false);
+    }
+  }, [email, passwordsMatch]);
+
+  useEffect(() => {
+    if (password.length > 5 && password === confirmPassword) {
+      setPasswordsMatch(true);
+    } else {
+      setPasswordsMatch(false);
+    }
+  }, [password, confirmPassword]);
 
   return (
     <LinearGradient
@@ -38,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
         >
           {/* wrapping Text tag below in plain View fixes choppy KeyboardAvoidingView movements on iOS */}
           <View>
-            <Text style={styles.title}>Log in</Text>
+            <Text style={styles.title}>Sign up</Text>
           </View>
           <CustomInput
             placeholder="Email"
@@ -53,32 +77,24 @@ const LoginScreen = ({ navigation }) => {
             value={password}
             isSecure={true}
           />
-          <CustomButton style={styles.button}>Login</CustomButton>
-
-          {/* Forgot password */}
-          <TouchableOpacity style={styles.forgotPwdContainer}>
-            <Text style={styles.text}>Forgot password?</Text>
-          </TouchableOpacity>
-
-          {/* Create account */}
-          <View style={styles.createAccountContainer}>
-            <Text style={styles.text}>Don't have an account? </Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Signup")}
-              hitSlop={25}
-            >
-              <Text style={[styles.text, { color: colors.violet }]}>
-                Sign up!
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <CustomInput
+            placeholder="Confirm Password"
+            icon="checkmark-sharp"
+            color={passwordsMatch && colors.lightGreen}
+            onChangeText={confirmInputHandler}
+            value={confirmPassword}
+            isSecure={true}
+          />
+          <CustomButton style={styles.button} disabled={!formFilled}>
+            Sign up
+          </CustomButton>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </LinearGradient>
   );
 };
 
-export default LoginScreen;
+export default SignupScreen;
 
 const styles = StyleSheet.create({
   container: {
