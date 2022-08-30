@@ -1,14 +1,19 @@
 import { NavigationContainer } from "@react-navigation/native";
+import { useContext } from "react";
 
 // navigation stacks
-import AuthenticatedStack from "./AuthenticatedStack";
 import UnauthenticatedStack from "./UnauthenticatedStack";
+import AuthenticatedStack from "./AuthenticatedStack";
+
+// context import
+import { AuthContext } from "../context/AuthContext";
 
 const AppNavigator = () => {
+  const { user } = useContext(AuthContext);
+
   return (
     <NavigationContainer>
-      {/* <AuthenticatedStack /> */}
-      <UnauthenticatedStack />
+      {user ? <AuthenticatedStack /> : <UnauthenticatedStack />}
     </NavigationContainer>
   );
 };
