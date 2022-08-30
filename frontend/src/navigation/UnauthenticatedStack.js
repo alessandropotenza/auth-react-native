@@ -1,17 +1,33 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Screen imports
-import HomeScreen from "../screens/authenticated/HomeScreen";
+import LoginScreen from "../screens/unauthenticated/LoginScreen";
+import SignupScreen from "../screens/unauthenticated/SignupScreen";
+
+// Component imports
+import BackButton from "../components/BackButton";
 
 const Stack = createNativeStackNavigator();
 
 const UnauthenticatedStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{ gestureDirection: "vertical" }}
+    >
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Login"
+        component={LoginScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Signup"
+        component={SignupScreen}
+        options={{
+          headerTitle: "",
+          headerTransparent: true,
+          headerLeft: () => <BackButton>Back to Log in</BackButton>,
+        }}
       />
     </Stack.Navigator>
   );
