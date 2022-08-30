@@ -1,8 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import React from "react";
 import colors from "../util/constants/colors";
 
-const CustomButton = ({ children, style, disabled }) => {
+const CustomButton = ({ children, style, disabled, onPress, isLoading }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -12,8 +17,13 @@ const CustomButton = ({ children, style, disabled }) => {
         disabled && { backgroundColor: colors.washedViolet },
       ]}
       disabled={disabled}
+      onPress={onPress}
     >
-      <Text style={styles.text}>{children}</Text>
+      {isLoading ? (
+        <ActivityIndicator size="small" color="white" />
+      ) : (
+        <Text style={styles.text}>{children}</Text>
+      )}
     </TouchableOpacity>
   );
 };
