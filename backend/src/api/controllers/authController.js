@@ -9,7 +9,7 @@ exports.signup = async (req, res, next) => {
   try {
     const [userData] = await User.getUser(email);
     if (userData[0]) {
-      const err = new Error("User already exists");
+      const err = new Error("A user with this email already exists");
       err.statusCode = 409;
       throw err;
     }
