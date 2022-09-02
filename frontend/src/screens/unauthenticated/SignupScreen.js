@@ -5,9 +5,13 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+
+// Context import
+import { AuthContext } from "../../context/AuthContext";
 
 // Component imports
 import CustomInput from "../../components/CustomInput";
@@ -17,11 +21,14 @@ import CustomButton from "../../components/CustomButton";
 import colors from "../../util/constants/colors";
 
 const SignupScreen = () => {
+  const auth = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(false);
   const [formFilled, setFormFilled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const emailInputHandler = (text) => setEmail(text);
   const passwordInputHandler = (text) => setPassword(text);
@@ -48,6 +55,21 @@ const SignupScreen = () => {
       setPasswordsMatch(false);
     }
   }, [password, confirmPassword]);
+
+  const onSignup = async () => {
+    setIsLoading(true);
+    try {
+      const result = await auth.signup(email, password);
+      if (result.conflict) {
+        Alert.alert(result.message);
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Could not sign you up", "Please try again later");
+      setIsLoading(false); // remove loading spinner if request failed
+    }
+  };
 
   return (
     <LinearGradient
@@ -85,7 +107,12 @@ const SignupScreen = () => {
             value={confirmPassword}
             isSecure={true}
           />
-          <CustomButton style={styles.button} disabled={!formFilled}>
+          <CustomButton
+            style={styles.button}
+            disabled={!formFilled}
+            onPress={onSignup}
+            isLoading={isLoading}
+          >
             Sign up
           </CustomButton>
         </KeyboardAvoidingView>
