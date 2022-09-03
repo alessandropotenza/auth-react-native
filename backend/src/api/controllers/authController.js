@@ -9,7 +9,7 @@ exports.signup = async (req, res, next) => {
   try {
     const [userData] = await User.getUser(email);
     if (userData[0]) {
-      const err = new Error("A user with this email already exists");
+      const err = new Error("Email already in use");
       err.statusCode = 200;
       throw err;
     }
@@ -38,7 +38,7 @@ exports.login = async (req, res, next) => {
   try {
     const [userData] = await User.getUser(email);
     if (!userData[0]) {
-      const err = new Error("User not found");
+      const err = new Error("Incorrect email or password");
       err.statusCode = 401;
       throw err;
     }
@@ -46,14 +46,14 @@ exports.login = async (req, res, next) => {
     const hashedPassword = user.password;
     const passwordsMatch = await bcrypt.compare(password, hashedPassword);
     if (!passwordsMatch) {
-      const err = new Error("Passwords do not match");
+      const err = new Error("Incorrect email or password");
       err.statusCode = 401;
       throw err;
     }
 
     // issue auth tokens
     const { accessToken, refreshToken } = await generateTokens(user.id);
-    res.status(200).json({ accessToken, refreshToken });
+    res.status(200).json({ accessToken, refreshToken, userID: user.id });
   } catch (err) {
     next(err);
   }
