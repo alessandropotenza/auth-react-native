@@ -65,9 +65,8 @@ const SignupScreen = () => {
         setIsLoading(false);
       }
     } catch (err) {
-      console.log(err);
-      Alert.alert("Could not sign you up", "Please try again later");
       setIsLoading(false); // remove loading spinner if request failed
+      Alert.alert("Could not sign you up", "Please try again later");
     }
   };
 
