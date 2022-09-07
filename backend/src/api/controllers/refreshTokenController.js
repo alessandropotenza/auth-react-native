@@ -46,7 +46,7 @@ exports.handleRefreshToken = async (req, res, next) => {
       userID
     );
 
-    res.status(200).json({ accessToken, newRefreshToken }); //send new tokens as response
+    res.status(200).json({ accessToken, newRefreshToken, userID }); //send new tokens as response
   } catch (err) {
     console.log(err);
     next(err);
