@@ -7,9 +7,13 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+
+// Context import
+import { AuthContext } from "../../context/AuthContext";
 
 // Component imports
 import CustomInput from "../../components/CustomInput";
@@ -19,11 +23,38 @@ import CustomButton from "../../components/CustomButton";
 import colors from "../../util/constants/colors";
 
 const LoginScreen = ({ navigation }) => {
+  const auth = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [formFilled, setFormFilled] = useState("");
+  const [isLoading, setIsLoading] = useState("");
 
   const emailInputHandler = (text) => setEmail(text);
   const passwordInputHandler = (text) => setPassword(text);
+
+  useEffect(() => {
+    if (email.length > 0 && password.length > 5) {
+      setFormFilled(true);
+    } else {
+      setFormFilled(false);
+    }
+  }, [email, password]);
+
+  const onLogin = async () => {
+    setIsLoading(true);
+    try {
+      await auth.login(email, password);
+    } catch (err) {
+      setIsLoading(false);
+      if (err.response.status === 401) {
+        // incorrect email or password
+        Alert.alert(err.response.data.message);
+      } else {
+        Alert.alert("Could not log you in", "Please try again later");
+      }
+    }
+  };
 
   return (
     <LinearGradient
@@ -53,7 +84,14 @@ const LoginScreen = ({ navigation }) => {
             value={password}
             isSecure={true}
           />
-          <CustomButton style={styles.button}>Login</CustomButton>
+          <CustomButton
+            style={styles.button}
+            disabled={!formFilled}
+            onPress={onLogin}
+            isLoading={isLoading}
+          >
+            Login
+          </CustomButton>
 
           {/* Forgot password */}
           <TouchableOpacity style={styles.forgotPwdContainer}>
